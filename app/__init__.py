@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from logging.handlers import RotatingFileHandler
+from pandas_datareader import data as pdr
 import os
 
 app = Flask(__name__)
@@ -15,6 +16,8 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
+nyse_symbols = pdr.get_nasdaq_symbols()
+nyse_symbols = nyse_symbols.index.values
 
 if not app.debug:
     # ...
