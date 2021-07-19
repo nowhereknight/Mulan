@@ -74,6 +74,14 @@ Una vez se termina de usar el entorno virtual es posible salir usando el comando
 ```
 (venv) $ deactivate
 ```
+### Pruebas en la Base de Datos
+El servidor de base de datos en común está montado en RDS y es públicamente accesible (No la mejor estrategia de seguridad. Lo admito. Pero para esta etapa de desarrollo y pruebas servirá). Pueden acceder por medio de este comando recordando que la abse de datos se llama `flask_database`
+```
+mysql -h flask-database.cekr24jx0ek8.us-east-1.rds.amazonaws.com -P 3306 -u admin -p
+```
+
+La contraseña es `12QwAsZx`
+
 
 ### Flask Docummentation
 [Documentación de Flask](https://flask.palletsprojects.com/en/2.0.x/)
