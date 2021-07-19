@@ -76,13 +76,13 @@ class User(UserMixin, db.Model):
 
 values_enterprises = db.Table(
     "values_enterprises",
-    db.Column("value_id", db.Integer, db.ForeignKey("values.value_id")),
+    db.Column("value_id", db.Integer, db.ForeignKey("values_table.value_id")),
     db.Column("enterprise_id", GUID(), db.ForeignKey("enterprises.enterprise_id")),
 )
 
 
 class Value(db.Model):
-    __tablename__ = 'values'
+    __tablename__ = 'values_table'
     value_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
