@@ -1,1 +1,1 @@
-web:gunicorn mulan:app
+web: gunicorn handler:app
