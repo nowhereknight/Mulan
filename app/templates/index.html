@@ -12,13 +12,19 @@
           <th>Nombre</th>
           <th>Descripción</th>
           <th>Símbolo</th>
+          <th>Valores</th>
           <th>Creado por:</th>
         </tr>
     {% for enterprise in enterprises %}
     <tr>
-        <td><b>{{ enterprise.name }}</b></td>
+        <td>{{ enterprise.name }}</td>
         <td>{{ enterprise.description }}</td>
         <td>{{ enterprise.symbol }}</td>
+        <td>
+            {% for value in enterprise.values %}
+            {{ value.name }}<br>
+            {% endfor %}
+        </td>
         <td>{{ enterprise.author.username }}</td>
       </tr>
 
