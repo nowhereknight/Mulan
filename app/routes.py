@@ -1,14 +1,17 @@
-from app import app, db, logging
-from app.models import User, Enterprise, Value
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, EnterpriseForm, EditEnterpriseForm
+from datetime import datetime
+
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from datetime import datetime
+
+from app import app, db, logging
+from app.models import User, Enterprise, Value
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, EnterpriseForm, EditEnterpriseForm
 
 
 @app.before_request
 def before_request():
+    """Función que actualiza periodicamente el valor de última conexión del usuario"""
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
@@ -18,6 +21,12 @@ def before_request():
 @app.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
+    """Función que maneja la lógica de la inserción de empresas tanto en 'enterprises'
+        como en 'values'enterprises', así como el despliegue de páginas y la paginación de las mismas
+
+    :return: [description]
+    :rtype: [type]
+    """
     form = EnterpriseForm()
     if form.validate_on_submit():
         enterprise = Enterprise(
@@ -26,7 +35,7 @@ def index():
         for value_name in form.values.data:
             value = Value.query.filter_by(name=value_name).first()
             if not value:
-                value=Value(name=value_name)
+                value = Value(name=value_name)
             enterprise.values.append(value)
         db.session.add(enterprise)
         db.session.commit()
@@ -50,6 +59,11 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Función que direcciona a formulario que valida identidad del usuario
+
+    :return: Redireccionamiento a página principal
+    :rtype: None
+    """
     if current_user.is_authenticated:
         return redirect(url_for("index"))
     form = LoginForm()
@@ -74,6 +88,12 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """Función que permite direccionar a la página de registro de usuarios y
+        manejar la lógica de las peticiones
+
+    :return: redireccionamiento a página de registro
+    :rtype: None
+    """
     if current_user.is_authenticated:
         return redirect(url_for("index"))
     form = RegistrationForm()
@@ -97,9 +117,10 @@ def user(username):
 @app.route("/edit_profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():
-    """[summary]
+    """Función que permite redireccionar a página de edición de perfiles de usuarios
+        y manejar la lógica de las peticiones
 
-    :return: [description]
+    :return: redireccionamiento a página de edición de perfiles
     :rtype: [type]
     """
     form = EditProfileForm(current_user.username)
@@ -117,17 +138,21 @@ def edit_profile():
 
 @app.route("/edit_enterprise/<enterprise_name>", methods=["GET", "POST"])
 @login_required
-def edit_enterprise(enterprise_name):
-    """[summary]
+def edit_enterprise(enterprise_name: str):
+    """Función que permite editar empresas y manejar la lógica de las peticiones
 
-    :return: [description]
-    :rtype: [type]
+
+    :param enterprise_name: enterprise_name Nombre de la empresa. Al ser único basta para
+            buscar en la DB sin tener que usar el uuid
+    :type enterprise_name: str
+    :return: Redireccionamiento a página de edición de empresa
+    :rtype: None
     """
     app.logger.error(enterprise_name)
-    current_enterprise=Enterprise.query.filter_by(name=enterprise_name).first()
+    current_enterprise = Enterprise.query.filter_by(name=enterprise_name).first()
     form = EditEnterpriseForm(current_enterprise.name, current_enterprise.symbol)
     if form.validate_on_submit():
-        current_enterprise.name = form.name.data 
+        current_enterprise.name = form.name.data
         current_enterprise.description = form.description.data
         current_enterprise.symbol = form.symbol.data
         db.session.commit()
@@ -140,16 +165,20 @@ def edit_enterprise(enterprise_name):
 
     return render_template("edit_enterprise.html", title="Editar Empresa", form=form)
 
+
 @app.route("/delete_enterprise/<enterprise_name>", methods=["GET", "POST"])
 @login_required
-def delete_enterprise(enterprise_name):
-    """[summary]
+def delete_enterprise(enterprise_name: str):
+    """Función que permite eliminar empresas y sus registros en
+    'values_enterprises' a la vez
 
-    :return: [description]
-    :rtype: [type]
+    :params: enterprise_name Nombre de la empresa. Al ser único basta para
+            buscar en la DB sin tener que usar el uuid
+    :return: redirect a página principal
+    :rtype: None
     """
     app.logger.error(enterprise_name)
-    current_enterprise=Enterprise.query.filter_by(name=enterprise_name).first()
+    current_enterprise = Enterprise.query.filter_by(name=enterprise_name).first()
     db.session.delete(current_enterprise)
     db.session.commit()
     flash("La empresa ha sido borrada con éxito")

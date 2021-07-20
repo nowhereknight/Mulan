@@ -20,7 +20,8 @@ nyse_symbols = pdr.get_nasdaq_symbols()
 nyse_symbols = nyse_symbols.index.values
 
 if not app.debug:
-
+    """ Configuración de los logs, accesibles por medio del comando heroku logs --tail
+    """
     if app.config['LOG_TO_STDOUT']:
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.INFO)
