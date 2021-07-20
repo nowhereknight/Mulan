@@ -24,8 +24,8 @@ def index():
     """Función que maneja la lógica de la inserción de empresas tanto en 'enterprises'
         como en 'values'enterprises', así como el despliegue de páginas y la paginación de las mismas
 
-    :return: [description]
-    :rtype: [type]
+    :return: Redireccionamiento a página principal
+    :rtype: None
     """
     form = EnterpriseForm()
     if form.validate_on_submit():
@@ -121,7 +121,7 @@ def edit_profile():
         y manejar la lógica de las peticiones
 
     :return: redireccionamiento a página de edición de perfiles
-    :rtype: [type]
+    :rtype: None
     """
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():

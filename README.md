@@ -1,7 +1,8 @@
 # Mulan
 
-Aplicación web basada en Flask diseñada para registrar, actualizar y eliminar registros de empresas que cotizan en la bolsa de valores de New York (o NYSE para sonar más fancy). Está nombrada gracias a mi amada gatita Mulán. Algunos dirán que también está nombrada por mi princesa favorita de Disney, pero eso es una coincidencia hasta que se demuestre lo contrario.
+Aplicación web basada en Flask diseñada para registrar, actualizar y eliminar registros de empresas que cotizan en la bolsa de valores de New York (o NYSE para sonar más fancy). Está nombrada gracias a mi amada gatita Mulán, nombrada por la comandante de las fuerzas armadas de China, Hua Mulán. Algunos dirán que también está nombrada por mi princesa favorita de Disney, pero eso es una coincidencia hasta que se demuestre lo contrario.
 
+Este proyecto fue desarrollado en conjunto con Pocahontas. Mientras que ahí se visualiza de mejor manera la información de la base de datos, aquí se inserta, elimina y actualiza.
 
 Credit where credit is due, esta aplicación no habría sido remotamente posible sin el apoyo del [Flask Mega-Tutorial series](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) de Miguel Grinberg
 
@@ -94,7 +95,7 @@ Una vez se termina de usar el entorno virtual es posible salir usando el comando
 ```
 
 ### Diagrama del sistema
-El diagrama del sistema es bastante sencillo. Se trata de dos instancias web independientes de Heroku conectadas a una instancia de base de datos de RDS
+El diagrama del sistema es bastante sencillo. Se trata de dos instancias web independientes de Heroku conectadas a una instancia de base de datos de RDS. Se observa que al compartir tanto Pocahontas como Mulán la misma BD, los usuarios son los mismos para ambas aplicaciones  
 ![](sistema.png)
 
 ### Pruebas en la Base de Datos
@@ -108,3 +109,8 @@ La contraseña es `12QwAsZx`
 
 ### Flask Docummentation
 [Documentación de Flask](https://flask.palletsprojects.com/en/2.0.x/)
+
+### Tareas pendientes
+- Desplegar desde el formualrio de inserción de empresas el uuid a insertar
+- Agregar modales al botón de Eliminar para confirmar la elección
+- Permitir editar la lista de valores
