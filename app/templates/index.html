@@ -14,6 +14,8 @@
           <th>Símbolo</th>
           <th>Valores</th>
           <th>Creado por:</th>
+          <th></th>
+          <th></th>
         </tr>
     {% for enterprise in enterprises %}
     <tr>
@@ -26,6 +28,8 @@
             {% endfor %}
         </td>
         <td>{{ enterprise.author.username }}</td>
+        <td><p><a class="btn btn-primary" href="{{ url_for('edit_enterprise', enterprise_name=enterprise.name) }}" role="button">Actualizar</a></p></td>
+        <td><a class="btn btn-danger" href="{{ url_for('delete_enterprise', enterprise_name=enterprise.name) }}" role="button">Borrar</a></td>
       </tr>
 
     {% endfor %}

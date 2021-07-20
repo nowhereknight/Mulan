@@ -107,8 +107,6 @@ class EnterpriseForm(FlaskForm):
     submit = SubmitField("Agregar")
 
     def validate_symbol(self, symbol):
-        app.logger.error(symbol.data)
-        app.logger.error(nyse_symbols)
         if symbol.data in nyse_symbols:
             raise ValidationError("El símbolo de tu empresa ya está registrado en la bolsa de valores de Nueva York")
         enterprise = Enterprise.query.filter_by(symbol=self.symbol.data).first()
@@ -122,3 +120,34 @@ class EnterpriseForm(FlaskForm):
         enterprise = Enterprise.query.filter_by(name=self.name.data).first()
         if enterprise is not None:
             raise ValidationError("Por favor usa un nombre diferente.")
+
+class EditEnterpriseForm(FlaskForm):
+    name = TextAreaField("Nombre de la empresa", validators=[DataRequired(), Length(min=1, max=64)])
+    description = TextAreaField(
+        "Descripción de la empresa", validators=[DataRequired(), Length(min=1, max=140)]
+    )
+    symbol = TextAreaField(
+        "Símbolo de la empresa", validators=[DataRequired(), Length(min=1, max=10)]
+    )
+    submit = SubmitField("Editar")
+
+    def __init__(self, original_name, original_symbol,*args, **kwargs):
+        super(EditEnterpriseForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name
+        self.original_symbol = original_symbol
+
+    def validate_name(self, name):
+        if name.data != self.original_name:
+            enterprise = Enterprise.query.filter_by(name=self.name.data).first()
+            if enterprise is not None:
+                raise ValidationError("Por favor usa un nombre diferente.")
+    
+    def validate_symbol(self, symbol):
+        if symbol.data != self.original_symbol:
+            if symbol.data in nyse_symbols:
+                raise ValidationError("El símbolo de tu empresa ya está registrado en la bolsa de valores de Nueva York")
+            enterprise = Enterprise.query.filter_by(symbol=self.symbol.data).first()
+            if enterprise is not None:
+                raise ValidationError("Símbolo ya usado. Por favor usa un símbolo diferente.")
+            if re.match(r'\b[A-Z]{3}\b[.!?]?', str(symbol.data)) is None:
+                raise ValidationError("Símbolo no sigue la expresión regular usada por el NYSE.")

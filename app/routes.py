@@ -1,6 +1,6 @@
 from app import app, db, logging
 from app.models import User, Enterprise, Value
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, EnterpriseForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, EnterpriseForm, EditEnterpriseForm
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -82,7 +82,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash("Congratulations, you are now a registered user!")
+        flash("Felicitaciones. Te has registrado con èxito")
         return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
@@ -97,14 +97,61 @@ def user(username):
 @app.route("/edit_profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():
+    """[summary]
+
+    :return: [description]
+    :rtype: [type]
+    """
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
-        flash("Your changes have been saved.")
+        flash("Tus cambios han sido guardados")
         return redirect(url_for("edit_profile"))
     elif request.method == "GET":
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template("edit_profile.html", title="Edit Profile", form=form)
+    return render_template("edit_profile.html", title="Editar Perfil", form=form)
+
+
+@app.route("/edit_enterprise/<enterprise_name>", methods=["GET", "POST"])
+@login_required
+def edit_enterprise(enterprise_name):
+    """[summary]
+
+    :return: [description]
+    :rtype: [type]
+    """
+    app.logger.error(enterprise_name)
+    current_enterprise=Enterprise.query.filter_by(name=enterprise_name).first()
+    form = EditEnterpriseForm(current_enterprise.name, current_enterprise.symbol)
+    if form.validate_on_submit():
+        current_enterprise.name = form.name.data 
+        current_enterprise.description = form.description.data
+        current_enterprise.symbol = form.symbol.data
+        db.session.commit()
+        flash("Tus cambios han sido registrados con éxito.")
+        return redirect(url_for("index"))
+    elif request.method == "GET":
+        form.name.data = current_enterprise.name
+        form.description.data = current_enterprise.description
+        form.symbol.data = current_enterprise.symbol
+
+    return render_template("edit_enterprise.html", title="Editar Empresa", form=form)
+
+@app.route("/delete_enterprise/<enterprise_name>", methods=["GET", "POST"])
+@login_required
+def delete_enterprise(enterprise_name):
+    """[summary]
+
+    :return: [description]
+    :rtype: [type]
+    """
+    app.logger.error(enterprise_name)
+    current_enterprise=Enterprise.query.filter_by(name=enterprise_name).first()
+    db.session.delete(current_enterprise)
+    db.session.commit()
+    flash("La empresa ha sido borrada con éxito")
+
+    return redirect(url_for("index"))
