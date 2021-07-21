@@ -44,7 +44,7 @@ Credit where credit is due, esta aplicación no habría sido remotamente posible
         - tests.py Tests que pueden ser ejecutados directamente por la terminal
 
 ### Estructura de la BD
-![](mulan-db.png)
+![](databases.png)
 
 ### Deployeo local
 
@@ -99,13 +99,28 @@ El diagrama del sistema es bastante sencillo. Se trata de dos instancias web ind
 ![](sistema.png)
 
 ### Pruebas en la Base de Datos
-El servidor de base de datos en común está montado en RDS y es públicamente accesible (No la mejor estrategia de seguridad. Lo admito. Pero para esta etapa de desarrollo y pruebas servirá). Pueden acceder por medio de este comando recordando que la abse de datos se llama `flask_database`
+El servidor de base de datos en común está montado en RDS y es públicamente accesible (No la mejor estrategia de seguridad. Lo admito. Pero para esta etapa de desarrollo y pruebas servirá). Pueden acceder por medio de este comando recordando que la base de datos se llama `flask_database`
 ```
 mysql -h flask-database.cekr24jx0ek8.us-east-1.rds.amazonaws.com -P 3306 -u admin -p
 ```
 
 La contraseña es `12QwAsZx`
 
+### Guía de Usuario
+La intención del proyecto es que sea lo más intuitivo posible. El siguiente flujo abarca el flujo completo asumiento que no se tiene cuenta alguna
+1. El primer paso es ingresar al sistema. No importa a qué URL válida quiera ingresar el usuario que se desprenda de la URL principal https://flask-mulan.herokuapp.com/, si no está loggeado por defecto lo redireccionará a https://flask-mulan.herokuapp.com/login, y al loggearse lo direccionará a la URL a la que quiere acceder. Esto por el valor `next` (ej. https://flask-mulan.herokuapp.com/login?next=%2Findex)
+![Vista de página de login](login.png)
+2. En caso de no tener un usuario registrado se puede dar click en Crear cuenta en la ventana anterior, y eso abrirá la siguiente  URL https://flask-mulan.herokuapp.com/register. De momento no se valida la dirección de correo electrónico directamente. Sólo que cumpla el formato válido.
+![Vista de página de register](register.png)
+3. Una vez con la cuenta creada se puede volver a la página de login con las credenciales recién creadas, y una vez loggeados, los redireccionará a la siguiente página principal (https://flask-mulan.herokuapp.com/index o https://flask-mulan.herokuapp.com/)
+![Vista de página principal](index.png)
+Esta vista está dividida en dos. El formulario que permite registrar las empresas, y el paginador para visualizar las empresas creadas, que de momento está limitado a tres empresas por página
+4. Antes de pasar al proceso de generación de empresas es pruedente visualizar el perfil de usuario. Para ello se puede dar click en Perfil, que redireccionará a https://flask-mulan.herokuapp.com/user/prueba. Ahí se actualiza continuamente el valor de "Última conexión". Hay otro valor que configuraremos si oprimimos `Edita tu perfil`
+![Vista de página de perfil de usuario](user.png)
+5. Cuando se oprime `Edita tu perfil`, se direcciona a la siguiente URl https://flask-mulan.herokuapp.com/edit_profile que permite añadir un valor a `Acerca de mi`
+![Vista de página de editar usuario](edit_user.png)
+Una vez editado se puede volver nuevamente a la URL del Perfil y se verán los cambios reflejados
+6. De vuelta a la vista principal (https://flask-mulan.herokuapp.com/), cuando se oprime el botón de Borrar se elimina la empresa invocando la URL https://flask-mulan.herokuapp.com/delete_enterprise/\<enterprise>, y se redireccionaría a la página principal. Bastante intuitivo. Cuando se oprime el botón Actualizar, se invoca la URL https://flask-mulan.herokuapp.com/edit_enterprise/\<enterprise> donde <enterprise> es el nombre de la empresa a buscar. 
 
 ### Flask Docummentation
 [Documentación de Flask](https://flask.palletsprojects.com/en/2.0.x/)
@@ -114,3 +129,4 @@ La contraseña es `12QwAsZx`
 - Desplegar desde el formualrio de inserción de empresas el uuid a insertar
 - Agregar modales al botón de Eliminar para confirmar la elección
 - Permitir editar la lista de valores
+- Mejorar el front end de la lista de valores
